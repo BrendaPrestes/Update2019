@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VendasWebMvc.Data;
+using VendasWebMvc.Services;
 
 namespace VendasWebMvc
 {
@@ -41,6 +42,7 @@ namespace VendasWebMvc
                     builder.MigrationsAssembly("VendasWebMvc")));
 
             services.AddScoped<ServicoSemeadura>();
+            services.AddScoped<ServicoVendedores>(); //esses querem dizer q ele pd ser injetado em outras class
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
