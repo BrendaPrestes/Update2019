@@ -1,8 +1,6 @@
-﻿using System;
-using VendasWebMvc.Models;
+﻿using VendasWebMvc.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using VendasWebMvc.Data;
 
 namespace VendasWebMvc.Services
@@ -24,7 +22,6 @@ namespace VendasWebMvc.Services
         }
         public void Inserir(Vendedor obj)
         {
-            obj.Department = _context.Department.First();
             _context.Add(obj);
             _context.SaveChanges();
         }
