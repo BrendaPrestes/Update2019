@@ -7,6 +7,5 @@ namespace VendasWebMvc.Models.ViewModels
 
         public Vendedor Vendedor { get; set; }
         public ICollection<Department> Departments { get; set; }
-        public int MyProperty { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VendasWebMvc.Data;
+using System;
 
 namespace VendasWebMvc.Services
 {
@@ -25,6 +26,15 @@ namespace VendasWebMvc.Services
             _context.Add(obj);
             _context.SaveChanges();
         }
+        public Vendedor EncontrarId(int id)//ele recebe um id
+        {//e vai ter q retorna o vendedor q possui esse id, caso n exista, retorna null
+            return _context.Vendedor.FirstOrDefault(obj => obj.Id == id);
+        }
+        public void Remover(int id)
+        {
+            var obj = _context.Vendedor.Find(id); //pega o obj passando o id
+            _context.Vendedor.Remove(obj); //e vai remover esse obj
+            _context.SaveChanges(); //e confirma essa alteração p atualiza la no banco de dados
+        }
     }
-
 }

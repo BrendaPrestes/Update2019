@@ -38,5 +38,25 @@ namespace VendasWebMvc.Controllers
             _servicoVendedores.Inserir(vendedor);
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult Delete(int? id)//? = p indicar q é opcional
+        {
+            if (id == null)// se for null, quer dizer q a requisição foi feita de uma forma indevida
+            {
+                return NotFound();//retorna "não encontrado"
+            }
+            var obj = _servicoVendedores.EncontrarId(id.Value); //pega o obj quem eu to querendo deleta
+            if (obj == null) //se esse id n existi
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _servicoVendedores.Remover(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
