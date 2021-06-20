@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VendasWebMvc.Data;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendasWebMvc.Services
 {
@@ -28,7 +29,8 @@ namespace VendasWebMvc.Services
         }
         public Vendedor EncontrarId(int id)//ele recebe um id
         {//e vai ter q retorna o vendedor q possui esse id, caso n exista, retorna null
-            return _context.Vendedor.FirstOrDefault(obj => obj.Id == id);
+            return _context.Vendedor.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id); 
+            //esse include é p ele tbm busca nas tabelas(department)
         }
         public void Remover(int id)
         {

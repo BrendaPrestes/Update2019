@@ -54,9 +54,23 @@ namespace VendasWebMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
-        {
+        {//esse post é p executar e qnd aperta o delete= apaga 
             _servicoVendedores.Remover(id);
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Details(int? id)
+        {//criou a ação Details no metodo get
+            if (id == null)// se for null, quer dizer q a requisição foi feita de uma forma indevida
+            {
+                return NotFound();//retorna "não encontrado"
+            }
+            var obj = _servicoVendedores.EncontrarId(id.Value); //pega o obj quem eu to querendo deleta
+            if (obj == null) //se esse id n existi
+            {
+                return NotFound();
+            }
+            return View(obj);
+
         }
     }
 }
