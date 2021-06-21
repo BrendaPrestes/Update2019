@@ -37,6 +37,12 @@ namespace VendasWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Vendedor vendedor)
         {
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Vendedor = vendedor, Departments = departments };
+                return View(viewModel);
+            }
             _servicoVendedores.Inserir(vendedor);
             return RedirectToAction(nameof(Index));
         }
@@ -95,6 +101,13 @@ namespace VendasWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Vendedor vendedor) //criação edit no metodo POST
         {
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Vendedor = vendedor, Departments = departments };
+                return View(viewModel);
+            }
+
             if (id != vendedor.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Incompatibilidade de id" });
