@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VendasWebMvc.Services;
 using VendasWebMvc.Models;
 using VendasWebMvc.Models.ViewModels;
+using VendasWebMvc.Services.Exceptions;
 
 namespace VendasWebMvc.Controllers
 {
@@ -70,7 +71,46 @@ namespace VendasWebMvc.Controllers
                 return NotFound();
             }
             return View(obj);
+        }
+        public IActionResult Edit(int? id)// o id é obrigatorio, coloco o ?(opcional) p evitar uma excessão
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            //agr testar se esse id existe no banco de dados
+            var obj = _servicoVendedores.EncontrarId(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            //agr abri a tela de edição e para isso precisa carrega meus departamentos para povoar a minha caixinha de seleção
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Vendedor = obj, Departments = departments };
+            return View(viewModel);
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Vendedor vendedor) //criação edit no metodo POST
+        {
+            if (id != vendedor.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _servicoVendedores.Update(vendedor);
+                return RedirectToAction(nameof(Index)); //isso t redirecinando a minha requisição p a pg inicial q é o index
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

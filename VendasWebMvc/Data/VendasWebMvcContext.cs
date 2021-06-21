@@ -9,7 +9,7 @@ namespace VendasWebMvc.Data
 {
     public class VendasWebMvcContext : DbContext
     {
-        public VendasWebMvcContext (DbContextOptions<VendasWebMvcContext> options)
+        public VendasWebMvcContext(DbContextOptions<VendasWebMvcContext> options)
             : base(options)
         {
         }
@@ -17,5 +17,6 @@ namespace VendasWebMvc.Data
         public DbSet<Department> Department { get; set; }
         public DbSet<Vendedor> Vendedor { get; set; }
         public DbSet<RecordVendas> RecordVendas { get; set; }
+
     }
 }
