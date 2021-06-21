@@ -7,6 +7,7 @@ using VendasWebMvc.Services;
 using VendasWebMvc.Models;
 using VendasWebMvc.Models.ViewModels;
 using VendasWebMvc.Services.Exceptions;
+using System.Diagnostics;
 
 namespace VendasWebMvc.Controllers
 {
@@ -43,12 +44,12 @@ namespace VendasWebMvc.Controllers
         {
             if (id == null)// se for null, quer dizer q a requisição foi feita de uma forma indevida
             {
-                return NotFound();//retorna "não encontrado"
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
             var obj = _servicoVendedores.EncontrarId(id.Value); //pega o obj quem eu to querendo deleta
             if (obj == null) //se esse id n existi
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             return View(obj);
         }
@@ -63,12 +64,12 @@ namespace VendasWebMvc.Controllers
         {//criou a ação Details no metodo get
             if (id == null)// se for null, quer dizer q a requisição foi feita de uma forma indevida
             {
-                return NotFound();//retorna "não encontrado"
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
             var obj = _servicoVendedores.EncontrarId(id.Value); //pega o obj quem eu to querendo deleta
             if (obj == null) //se esse id n existi
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             return View(obj);
         }
@@ -76,13 +77,13 @@ namespace VendasWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
             //agr testar se esse id existe no banco de dados
             var obj = _servicoVendedores.EncontrarId(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             //agr abri a tela de edição e para isso precisa carrega meus departamentos para povoar a minha caixinha de seleção
             List<Department> departments = _departmentService.FindAll();
@@ -96,21 +97,27 @@ namespace VendasWebMvc.Controllers
         {
             if (id != vendedor.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Incompatibilidade de id" });
             }
             try
             {
                 _servicoVendedores.Update(vendedor);
                 return RedirectToAction(nameof(Index)); //isso t redirecinando a minha requisição p a pg inicial q é o index
             }
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
+        }
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
             {
-                return BadRequest();
-            }
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier //esse macete é do framework p vc pegar o id interno da requisição
+            };
+            return View(viewModel);
+
         }
     }
 }
