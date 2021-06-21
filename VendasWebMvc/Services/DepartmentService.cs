@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VendasWebMvc.Data;
 using VendasWebMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendasWebMvc.Services
 {
@@ -13,9 +15,10 @@ namespace VendasWebMvc.Services
         {
             _context = context;
         }
-        public List<Department> FindAll()
+        public async Task<List<Department>> FindAllAsync()
         {//criou um servico de departamento com o metodo p retornar os departments ordenados
-            return _context.Department.OrderBy(x => x.Nome).ToList();
+            //task = é um obj q encapsulao processamento assincrona deixando a rogramação mais simples
+            return await _context.Department.OrderBy(x => x.Nome).ToListAsync();
         }
 
     }
