@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VendasWebMvc.Data;
 using VendasWebMvc.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace VendasWebMvc
 {
@@ -43,13 +45,21 @@ namespace VendasWebMvc
 
             //estao registrado no sistema de injeção de dependencia = esses querem dizer q ele pd ser injetado em outras class  
             services.AddScoped<ServicoSemeadura>();
-            services.AddScoped<ServicoVendedores>(); 
+            services.AddScoped<ServicoVendedores>();
             services.AddScoped<DepartmentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ServicoSemeadura servicoSemeadura)
         {
+            var enUS = new CultureInfo("en-US");
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(enUS), //cultura de solicitação padrão
+                SupportedCultures = new List<CultureInfo> { enUS }, //quais são  possiveis p a minha aplicação
+                SupportedUICultures = new List<CultureInfo> { enUS } //
+            };
+            app.UseRequestLocalization(localizationOptions); //nosso app vai ter uma localização padrao US
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
