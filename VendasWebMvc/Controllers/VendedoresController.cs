@@ -63,8 +63,16 @@ namespace VendasWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {//esse post é p executar e qnd aperta o delete= apaga 
-            await _servicoVendedores.RemoverAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _servicoVendedores.RemoverAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (IntegrityException e)
+            {
+
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
         public async Task<IActionResult> Details(int? id)
         {//criou a ação Details no metodo get

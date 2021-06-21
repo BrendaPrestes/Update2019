@@ -36,9 +36,16 @@ namespace VendasWebMvc.Services
         }
         public async Task RemoverAsync(int id)
         {
-            var obj = await _context.Vendedor.FindAsync(id); //pega o obj passando o id
-            _context.Vendedor.Remove(obj); //e vai remover esse obj
-            await _context.SaveChangesAsync(); //e confirma essa alteração p atualiza la no banco de dados
+            try
+            {
+                var obj = await _context.Vendedor.FindAsync(id); //pega o obj passando o id
+                _context.Vendedor.Remove(obj); //e vai remover esse obj
+                await _context.SaveChangesAsync(); //e confirma essa alteração p atualiza la no banco de dados
+            }
+            catch (DbUpdateException)
+            {
+                throw new IntegrityException("Não é possível excluir o vendedor porque ele/ela tem vendas");
+            }
         }
         public async Task UpdateAsync(Vendedor obj)
         {//any= se existe alg registro no bancoDados c a condição p eu coloca aqui
