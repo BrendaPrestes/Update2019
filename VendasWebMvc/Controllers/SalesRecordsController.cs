@@ -21,7 +21,7 @@ namespace VendasWebMvc.Controllers
             return View();
         }
         public async Task<IActionResult> SimpleSearch(DateTime? minDate, DateTime? maxDate)
-        {
+        {//isso é o ajuste p elas serem informadas
             if (!minDate.HasValue)
             {
                 minDate = new DateTime(DateTime.Now.Year, 1, 1);
@@ -38,9 +38,24 @@ namespace VendasWebMvc.Controllers
             var result = await _salesRecordService.FindByDateAsync(minDate, maxDate);
             return View(result);
         }
-        public IActionResult GroupingSearch()
-        {
-            return View();
+        public async Task<IActionResult> GroupingSearch(DateTime? minDate, DateTime? maxDate)
+        {//isso é o ajuste p elas serem informadas
+            if (!minDate.HasValue)
+            {
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
+            }
+
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
+            //agr passa esses dados mnDate e maxDate la na minha view
+            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+
+            var result = await _salesRecordService.FindByDateGroupingAsync(minDate, maxDate);
+            return View(result);
         }
+
     }
 }

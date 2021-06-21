@@ -28,10 +28,29 @@ namespace VendasWebMvc.Services
             {
                 result = result.Where(x => x.Data <= maxDate.Value);
             }
-            return await result 
+            return await result
                 .Include(x => x.Vendedor) //fiz o json
                 .Include(x => x.Vendedor.Department) //fiz o json na tabela de departments
                 .OrderByDescending(x => x.Data) //ordena por data
+                .ToListAsync();
+        }
+
+        public async Task<List<IGrouping<Department, SalesRecord>>> FindByDateGroupingAsync(DateTime? minDate, DateTime? maxDate)
+        {//essa declaracao pega o RecordVendas q é DbSet, e construi um obj Result q é do tipo IQueryable(em cima dele posso acrescentaroutros detalhes da minha consulta
+            var result = from obj in _context.RecordVendas select obj;
+            if (minDate.HasValue)//ou seja, eu informei uma data min
+            {
+                result = result.Where(x => x.Data >= minDate.Value);
+            }
+            if (maxDate.HasValue)//ou seja, eu informei uma data max
+            {
+                result = result.Where(x => x.Data <= maxDate.Value);
+            }
+            return await result
+                .Include(x => x.Vendedor) //fiz o json
+                .Include(x => x.Vendedor.Department) //fiz o json na tabela de departments
+                .OrderByDescending(x => x.Data) //ordena por data
+                .GroupBy(x => x.Vendedor.Department) //agrupa esses dados por department
                 .ToListAsync();
         }
 
